@@ -1,0 +1,12 @@
+ab:256
+bc:257
+ca:258
+abc:259
+cab:260
+bca:261
+abca:262
+abcab:263
+bcab:264
+bcabc:265
+cabc:266
+cabca:267

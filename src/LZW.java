@@ -44,7 +44,7 @@ public class LZW {
 				}
 				//this if statement makes sure we are not putting the very first sum, which would just be a single character long (e.g. null+"a"), into the custom dictionary; the "first" boolean keeps track if this is the first time going through the while loop
 				if(!first) {
-					if(counter<20255) {
+					if (counter<258) {
 						counter++;
 						dictionary.put(sum,counter);
 					}
@@ -57,7 +57,7 @@ public class LZW {
 			 first = false;
 			 temp = p+c;//temp saves the most recent sum for the last time the while loop runs, for the next line outside the loop to output its code
 		}
-		if(!dictionary.containsKey(temp)&&counter<20255) {
+		if(!dictionary.containsKey(temp)&&counter<258) {
 			counter++;
 			dictionary.put(temp,counter);
 		}

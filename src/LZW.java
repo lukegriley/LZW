@@ -19,21 +19,22 @@ public class LZW {
 		
 		String p = null;
 		char c = (char)br.read();
-		String sum;
+		String sum = "";
 		int counter = 255;
 		boolean first = true;
+		String temp = "";
 		while(br.ready()) {
 			sum = p+c;
 			if(dictionary.containsKey(sum)) {
 				p = sum;
 			}
 			else {
-				//output P
+				//if p index is under 255
 				if(p!=null&&p.length()==1) {
 					String output = (int)p.charAt(0)+",";
 					encodeWriter.write(output);
 				}
-				
+				//if p is not in dictionary and needs to be added
 				else if(p!=null&&p.length()>1) {
 					encodeWriter.write(dictionary.get(p)+",");
 				}
@@ -48,10 +49,14 @@ public class LZW {
 			
 			 c = (char) br.read();
 			 first = false;
+			 temp = p+c;
 		}
-		
+		encodeWriter.write(dictionary.get(temp)+",");
+		//close things
 		br.close();
 		dictionaryWriter.close();
+		System.out.println(dictionary.toString());
+		System.out.println("last p="+p+", last c="+c);
 		encodeWriter.close();
 		
 	}

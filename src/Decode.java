@@ -1,5 +1,10 @@
 public class Decode{
-	public static HashMap<String, Integer> getHashMap(String ciphertext)
+	public static HashMapString, Integer> getHashMap(String ciphertext)
+	{
+		
+	}
+	
+	public String convertFileToString(String filename)
 	{
 		
 	}

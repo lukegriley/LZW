@@ -1,3 +1,4 @@
+import java.util.*;
 import java.io.*;
 
 public class Decode{
@@ -6,20 +7,20 @@ public class Decode{
 		
 	}
 	
-	public String convertFileToString(String filename)
+	public ArrayList<Integer> convertFileToString(String filename)
 	{
-		//read encoded file as an input
+		//read the encoded file as an input
 		BufferedReader encodedFileReader = new BufferedReader(new FileReader(filename));
-		//create the string that will be the decoded file in that format
-		String encodedString = "";
-		int current;
+		//create an arraylist that will take in the encoded file in the form of ints from chars
+		ArrayList<Integer> encodedFileInts = new ArrayList<Integer>();
+		int current; 
 		
 		//iterate through the encoded file and convert it into a string
 		while((current = encodedFileReader.read())!=-1)
 		{
-			encodedString = encodedString+(char)current;
+			encodedFileInts.add(current);
 		}
 		
-		return encodedString;
+		return encodedFileInts;
 	}
 }

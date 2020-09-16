@@ -20,6 +20,7 @@ public class Decode{
 		{
 			encodedFileInts.add(current);
 		}
+		encodedFileReader.close();
 		
 		return encodedFileInts;
 	}

@@ -49,6 +49,11 @@ public class Decode{
 		//System.out.println(ciphertext);
 		String plaintextChunk = new String();
 		plaintextChunk = decodingDictionary.get(ciphertext);
+		if(plaintextChunk == null)
+		{
+			handleCiphertextNotInDictionaryError(currentLongestSubstringInDictionary, encodingDictionary, decodingDictionary);
+			plaintextChunk = decodingDictionary.get(ciphertext);
+		}
 		//System.out.println(plaintextChunk);
 		//System.out.println(currentLongestSubstringInDictionary);
 		//we will now iterate through the LZW encoding-esque algorithm for each character in plaintextChunk
@@ -82,7 +87,7 @@ public class Decode{
 	 * @param encodingDictionary the dictionary to be initialized
 	 * @param CHARSET_SIZE the size of the charset
 	 */
-	private static void initializeEncodingDictionary(HashMap<String, Integer> encodingDictionary, int CHARSET_SIZE)
+	public static void initializeEncodingDictionary(HashMap<String, Integer> encodingDictionary, int CHARSET_SIZE)
 	{
 		for(int i = 0; i < CHARSET_SIZE; i++)
 		{
@@ -101,7 +106,27 @@ public class Decode{
 			decodingDictionary.put(i, (char)(i) + "");
 		}
 	}
-	
+	/**
+	 * We will have to handle a strange edge case in which, during LZW encoding, the information required to add a symbol into the dictionary is contained within the first encoded instance of that symbol.
+	 * In other words, the information required to add, say, "bb=256" cannot be accessed, because to add "bb" you need to first decode "256", but to decode "256" you must first add "bb."
+	 * By way of example, consider encoding the string "bbbb". Each of the steps are enumerated below:
+	 * P = null, C = b, no output, no change in dictionary
+	 * P = b, C = b, output 98 (b), add bb (256) to dictionary 
+	 * P = b, C = b, no output, no change in dictionary
+	 * P = bb, C = b, output bb (256) and b (98) [both are outputted because we have reached the end and triggered the edge case], no change in dictionary
+	 * The final output will be 98,256,98. But when we perform our algorithm of decoding everything that we can, adding every key that we can create from the decoded part to the dictionary, and iterating, we find a problem.
+	 * Initially, we can only decode 98 (b). But from here, without the edge case handling which is about to occur, we will not be able to assign a symbol to 256.
+	 * The only way in which this error can occur is if a symbol s is put into the dictionary, then immediately afterwards, a symbol which consists of s plus another character is added into the dictionary.
+	 * The only way in which that scenario can occur is if a symbol starts and ends with the same character. (A proof of this is trivial.)
+	 * Therefore, if and only if we encounter a symbol not in our dictionary, we may safely handle it by taking the last observed symbol s and adding s+s.charAt(0) to our dictionary.
+	 * @param currentLongestSubstringInDictionary the symbol we will use to handle this edge case
+	 * @param encodingDictionary the encoding dictionary
+	 * @param decodingDictionary the decoding dictionary
+	 */
+	private static void handleCiphertextNotInDictionaryError(StringBuilder currentLongestSubstringInDictionary, HashMap<String, Integer> encodingDictionary, HashMap<Integer, String> decodingDictionary)
+	{
+		addNewSymbolToDictionary(new StringBuilder(currentLongestSubstringInDictionary.toString()+currentLongestSubstringInDictionary.toString().charAt(0)), encodingDictionary, decodingDictionary);
+	}
 	
 
 }

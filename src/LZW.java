@@ -19,6 +19,7 @@ public class LZW {
 		/*our dictionary (table of codes) only contains the custom codes we give to groups of characters. single characters with an 
 		 * index under 255 are already known by java and do not need to be stored in the dictionary in our program
 		 */
+		Decode.initializeEncodingDictionary(dictionary, 256);
 		String p = null; 
 		char c = (char)br.read(); 
 		String sum = "";
@@ -61,7 +62,13 @@ public class LZW {
 			counter++;
 			dictionary.put(temp,counter);
 		}
-		encodeWriter.write(dictionary.get(p)+","+(int)c+",");
+		if(p.length() > 1)
+		{
+			encodeWriter.write(dictionary.get(p)+","+(int)c+",");
+		}
+		else {
+			encodeWriter.write((int)p.charAt(0)+","+(int)c+",");
+		}
 		System.out.println("temp:"+temp);
 		//close writers
 		br.close();

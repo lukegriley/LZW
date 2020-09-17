@@ -25,7 +25,7 @@ public class LZW {
 		int counter = 255;//keeps track of what index new Strings should be added to the custom dictionary as
 		boolean first = true;//keeps track of if this is our first time going through the while loop. the necessity for this is explained further down
 		String temp = "";
-		
+		char lastC = 'q';
 		while(br.ready()) {
 			String tempP = p;
 			sum = p+c;
@@ -52,7 +52,7 @@ public class LZW {
 				}
 				p = c+"";
 			 }
-			
+			lastC = c;
 			 c = (char) br.read();
 			 first = false;
 			 temp = p+c;//temp saves the most recent sum for the last time the while loop runs, for the next line outside the loop to output its code
@@ -61,7 +61,7 @@ public class LZW {
 			counter++;
 			dictionary.put(temp,counter);
 		}
-		encodeWriter.write(dictionary.get(temp)+",");
+		encodeWriter.write(dictionary.get(p)+","+(int)c+",");
 		System.out.println("temp:"+temp);
 		//close writers
 		br.close();

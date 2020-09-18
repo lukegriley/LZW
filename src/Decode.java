@@ -1,27 +1,27 @@
 import java.util.HashMap;
 
-public class Decode{
+public class Decode extends LZWHelper{
+	
+	/*
+	 * TODO: Merge initializeEncodingDictionary and initializeDecodingDictionary into a single function that calls addNewSymbolToDictionary CHARSET_SIZE times
+	 */
+	
+	public Decode()
+	{
+		
+	}
 	
 	/**
 	 * Returns a HashMap<Integer, String> object that represents the dictionary that an LZW algorithm would create to encode a plaintext string.
 	 * Takes in ciphertext formatted as an array of integers.
 	 * For example, if the input is [97,98,99,256,99] where the plaintext is abcabc, then the HashMap would have as key-value pairs (256, ab), (257, bc), (258, ca), (259, abc)
-	 *  
+	 * 
 	 * @param ciphertextAsArray the ciphertext that will correspond to the HashMap we return. 
 	 * @return the HashMap that can be used to decode the ciphertext.
 	 */
-	public static HashMap<Integer, String> getLZWDecodingHashMap(int[] ciphertextAsArray)
+	public HashMap<Integer, String> getLZWDecodingHashMap(int[] ciphertextAsArray)
 	{
-		//decodingDictionary will keep track of what ciphertext integers correspond to which plaintext strings. We will return this at the end of the function.
-		HashMap<Integer, String> decodingDictionary = new HashMap<Integer, String>();
-		//We will essentially perform LZW encoding again to find the decoding dictionary. The following variables will all be needed for this algorithm.
-		//encodingDictionary will do the opposite of decodingDictionary, keeping track of which plaintext strings correspond to which plaintext integers. We will need this to compute which ciphertext strings correspond to which plaintext integers.
-		HashMap<String, Integer> encodingDictionary = new HashMap<String, Integer>();
-		//currentLongestSubstringInDictionary will keep track of the longest consecutive substring in the plaintext which is already in our dictionary. Every time we run the decryption algorithm, the starting character will be set to the character we are currently running the algorithm on every time currentLongestSubstringInDictionary becomes not in the dictionary, and grows in length by one otherwise. 
-		//we use a StringBuilder instead of a String so that we can modify the value stored inside currentLongestSubstringInDictionary from within a function. (In Java, Strings are immutable, so we cannot simply concatenate values to a string.)
-		StringBuilder currentLongestSubstringInDictionary = new StringBuilder();
-		//We need to initialize the encoding and decoding dictionaries with the charset we are using. CHARSET_SIZE represents the size of our charset.
-		final int CHARSET_SIZE = 256;
+
 		//The following two methods will initialize our encoding and decoding dictionaries, respectively.
 		initializeEncodingDictionary(encodingDictionary, CHARSET_SIZE);
 		initializeDecodingDictionary(decodingDictionary, CHARSET_SIZE);
@@ -43,10 +43,9 @@ public class Decode{
 	 * @param encodingDictionary the dictionary we will use to keep track of the encoding key-value pairs
 	 * @param decodingDictionary the dictionary we will use to keep track of the decoding key-value pairs
 	 */
-	private static void decode(int ciphertext, StringBuilder currentLongestSubstringInDictionary, HashMap<String, Integer> encodingDictionary, HashMap<Integer, String> decodingDictionary)
+	private void decode(int ciphertext, StringBuilder currentLongestSubstringInDictionary, HashMap<String, Integer> encodingDictionary, HashMap<Integer, String> decodingDictionary)
 	{
 		//plaintextChunk will contain the plaintext that ciphertext corresponds to.
-		//System.out.println(ciphertext);
 		String plaintextChunk = new String();
 		plaintextChunk = decodingDictionary.get(ciphertext);
 		if(plaintextChunk == null)
@@ -54,19 +53,14 @@ public class Decode{
 			handleCiphertextNotInDictionaryError(currentLongestSubstringInDictionary, encodingDictionary, decodingDictionary);
 			plaintextChunk = decodingDictionary.get(ciphertext);
 		}
-		//System.out.println(plaintextChunk);
-		//System.out.println(currentLongestSubstringInDictionary);
-		//we will now iterate through the LZW encoding-esque algorithm for each character in plaintextChunk
+		//We will now iterate through the LZW encoding-esque algorithm for each character in plaintextChunk
 		for(int i = 0; i < plaintextChunk.length(); i++)
 		{
 			currentLongestSubstringInDictionary.append(plaintextChunk.charAt(i) + "");
 			if(encodingDictionary.get(currentLongestSubstringInDictionary.toString()) == null)
 			{
-				addNewSymbolToDictionary(currentLongestSubstringInDictionary, encodingDictionary, decodingDictionary);
-				//System.out.println(decodingDictionary);
-				//resetting currentLongestSubstringInDictionary
-				currentLongestSubstringInDictionary.setLength(0); 
-				currentLongestSubstringInDictionary.append(plaintextChunk.charAt(i) + "");
+				handleSubstringNotInDictionary(plaintextChunk.charAt(i), currentLongestSubstringInDictionary, encodingDictionary, decodingDictionary);
+				System.out.println(encodingDictionary);
 			}
 		}
 	}
@@ -76,7 +70,7 @@ public class Decode{
 	 * @param encodingDictionary the encoding dictionary
 	 * @param decodingDictionary the decoding dictionary
 	 */
-	private static void addNewSymbolToDictionary(StringBuilder currentLongestSubstringInDictionary, HashMap<String, Integer> encodingDictionary, HashMap<Integer, String> decodingDictionary)
+	public void addNewSymbolToDictionary(StringBuilder currentLongestSubstringInDictionary, HashMap<String, Integer> encodingDictionary, HashMap<Integer, String> decodingDictionary)
 	{
 		String symbol = currentLongestSubstringInDictionary.toString();
 		encodingDictionary.put(symbol, encodingDictionary.size());
@@ -87,7 +81,7 @@ public class Decode{
 	 * @param encodingDictionary the dictionary to be initialized
 	 * @param CHARSET_SIZE the size of the charset
 	 */
-	public static void initializeEncodingDictionary(HashMap<String, Integer> encodingDictionary, int CHARSET_SIZE)
+	public void initializeEncodingDictionary(HashMap<String, Integer> encodingDictionary, int CHARSET_SIZE)
 	{
 		for(int i = 0; i < CHARSET_SIZE; i++)
 		{
@@ -99,7 +93,7 @@ public class Decode{
 	 * @param decodingDictionary the dictionary to be initialized
 	 * @param CHARSET_SIZE the size of the charset
 	 */
-	private static void initializeDecodingDictionary(HashMap<Integer, String> decodingDictionary, int CHARSET_SIZE)
+	private void initializeDecodingDictionary(HashMap<Integer, String> decodingDictionary, int CHARSET_SIZE)
 	{
 		for(int i = 0; i < CHARSET_SIZE; i++)
 		{
@@ -123,7 +117,7 @@ public class Decode{
 	 * @param encodingDictionary the encoding dictionary
 	 * @param decodingDictionary the decoding dictionary
 	 */
-	private static void handleCiphertextNotInDictionaryError(StringBuilder currentLongestSubstringInDictionary, HashMap<String, Integer> encodingDictionary, HashMap<Integer, String> decodingDictionary)
+	private void handleCiphertextNotInDictionaryError(StringBuilder currentLongestSubstringInDictionary, HashMap<String, Integer> encodingDictionary, HashMap<Integer, String> decodingDictionary)
 	{
 		addNewSymbolToDictionary(new StringBuilder(currentLongestSubstringInDictionary.toString()+currentLongestSubstringInDictionary.toString().charAt(0)), encodingDictionary, decodingDictionary);
 	}

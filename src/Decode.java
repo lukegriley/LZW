@@ -28,7 +28,6 @@ public class Decode extends LZWHelper{
 		
 		//retrieve the hashmap dictionary based on the encoded file
 		HashMap<Integer,String> dictionary= getLZWDecodingHashMap(encodedInts);
-		System.out.println(dictionary);
 		
 		//create a blank file where the decoded string would be written
 		String decodedFilename = filename.substring(0, filename.length()-4);
@@ -69,7 +68,6 @@ public class Decode extends LZWHelper{
 			{
 				if(currentChar == (int)' ')
 				{
-					System.out.println(currentBlock);
 					encodedFileInts.add(Integer.parseInt(currentBlock));
 					currentBlock = "";
 					

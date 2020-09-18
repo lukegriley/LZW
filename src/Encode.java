@@ -120,8 +120,6 @@ public class Encode extends LZWHelper{
 	public void handleEndCase(Character finalCharacter, StringBuilder currentLongestSubstringInDictionary, BufferedWriter encodeWriter)
 	{
 		outputToCodestream(currentLongestSubstringInDictionary.toString().substring(0, currentLongestSubstringInDictionary.length()), encodeWriter);
-//		System.out.println(finalCharacter);
-//		outputToCodestream("d", encodeWriter);
 	}
 	
 }

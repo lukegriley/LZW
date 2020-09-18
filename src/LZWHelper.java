@@ -47,7 +47,7 @@ public class LZWHelper
 	 */
 	public void addNewSymbolToDictionary(StringBuilder currentLongestSubstringInDictionary, HashMap<String, Integer> encodingDictionary, HashMap<Integer, String> decodingDictionary)
 	{
-		
+		System.out.println("If you're seeing this, there has been an issue with how a class inherits from LZWHelper. Check to make sure that you have not changed any names or protections of functions which appear in LZWHelper.");
 	}
 	/**
 	 * Outputs the output to a codestream.
@@ -55,7 +55,7 @@ public class LZWHelper
 	 */
 	public void outputToCodestream(String output, BufferedWriter encodeWriter)
 	{
-		
+		System.out.println("If you're seeing this, there has been an issue with how a class inherits from LZWHelper. Check to make sure that you have not changed any names or protections of functions which appear in LZWHelper.");
 	}
 	
 }

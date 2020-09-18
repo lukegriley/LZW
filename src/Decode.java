@@ -2,13 +2,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.io.*;
 
-public class Decode{
-	public static HashMap<String, Integer> getHashMap(String ciphertext)
-
-import java.util.*;
-import java.io.*;
-import java.util.HashMap;
-
 public class Decode extends LZWHelper{
 
 
@@ -29,8 +22,9 @@ public class Decode extends LZWHelper{
 	 * This is an artifact of the way work was divided up. 
 	 * A future optimization would be to use the getLZWDecodingHashMap function to directly decode the file, instead of using this moderately slow method. However, the big O is still O(n) where n is the length of the file, so it is probably alright.
 	 * @param filename 
+	 * @throws IOException 
 	 */
-	public void decode(String filename)
+	public void decode(String filename) throws IOException
 	{
 		//convert the encoded file into an int array
 		int[] encodedInts = convertFileToString(filename);
@@ -39,12 +33,12 @@ public class Decode extends LZWHelper{
 		HashMap<Integer,String> dictionary= getLZWDecodingHashMap(encodedInts);
 		
 		//create a blank file where the decoded string would be written
-		decodedFilename = filename.substring(0, filename.length()-4);
+		String decodedFilename = filename.substring(0, filename.length()-4);
 		File decodedFile = new File(decodedFilename);
 		FileWriter decodeWriter = new FileWriter(decodedFile);
 		
 		//loop through the encoded integers, convert them into string using the dictionary and write them to the file
-		for(int i=0;i<encodedInts.length();i++)
+		for(int i=0;i<encodedInts.length;i++)
 		{
 			decodeWriter.write(dictionary.get(encodedInts[i]));
 		}

@@ -1,3 +1,9 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.io.*;
+
+public class Decode{
+	public static HashMap<String, Integer> getHashMap(String ciphertext)
 
 import java.util.*;
 import java.io.*;
@@ -26,11 +32,28 @@ public class Decode extends LZWHelper{
 	 */
 	public void decode(String filename)
 	{
+		//convert the encoded file into an int array
+		int[] encodedInts = convertFileToString(filename);
+		
+		//retrieve the hashmap dictionary based on the encoded file
+		HashMap<Integer,String> dictionary= getLZWDecodingHashMap(encodedInts);
+		
+		//create a blank file where the decoded string would be written
+		decodedFilename = filename.substring(0, filename.length()-4);
+		File decodedFile = new File(decodedFilename);
+		FileWriter decodeWriter = new FileWriter(decodedFile);
+		
+		//loop through the encoded integers, convert them into string using the dictionary and write them to the file
+		for(int i=0;i<encodedInts.length();i++)
+		{
+			decodeWriter.write(dictionary.get(encodedInts[i]));
+		}
+		decodeWriter.close();
 		
 	}
 	
 	//TODO: Document this
-	private ArrayList<Integer> convertFileToString(String filename)
+	private int[] convertFileToString(String filename)
 	{
 		
 		//create an arraylist that will take in the encoded file in the form of ints from chars
@@ -52,7 +75,10 @@ public class Decode extends LZWHelper{
 			
 		}
 
-		return encodedFileInts;
+		//convert the arraylist into an integer array
+		int[] encodedFileIntsArray = encodedFileInts.toArray();
+
+		return encodedFileIntsArray;
 	}
 
 	/**
@@ -166,4 +192,5 @@ public class Decode extends LZWHelper{
 		addNewSymbolToDictionary(new StringBuilder(currentLongestSubstringInDictionary.toString()+currentLongestSubstringInDictionary.toString().charAt(0)), encodingDictionary, decodingDictionary);
 	}
 	
+
 }

@@ -15,7 +15,7 @@ public class Decode extends LZWHelper{
 
 	}
 	/**
-	 * This method decodes a sequence of comma-delimited integers representing an LZW-encoded file.
+	 * This method decodes a sequence of space-delimited integers representing an LZW-encoded file.
 	 * It does so by reading in a file containing nothing but a sequence of comma-delimited integers, running a function which finds the hashmap that the original LZW encoding algorithm used to encode the plaintext, and uses it to decode the ciphertext.
 	 * Takes in a filename that ends in .lzw and writes the plaintext to a file whose name is filename.substring(0, filename.length()-4).
 	 * It is known that the getLZWDecodingHashMap function more or less already decodes the input on its own. 
@@ -31,6 +31,7 @@ public class Decode extends LZWHelper{
 		
 		//retrieve the hashmap dictionary based on the encoded file
 		HashMap<Integer,String> dictionary= getLZWDecodingHashMap(encodedInts);
+		System.out.println(dictionary);
 		
 		//create a blank file where the decoded string would be written
 		String decodedFilename = filename.substring(0, filename.length()-4);
@@ -57,12 +58,22 @@ public class Decode extends LZWHelper{
 			//read the encoded file as an input
 			BufferedReader encodedFileReader = new BufferedReader(new FileReader(filename));
 			
-			int current;
+			int currentChar;
+			String currentBlock = "";
 
 			//iterate through the encoded file and convert it into a string
-			while((current = encodedFileReader.read())!=-1)
+			while((currentChar = encodedFileReader.read())!=-1)
 			{
-				encodedFileInts.add(current);
+				if(currentChar == (int)' ')
+				{
+					System.out.println(currentBlock);
+					encodedFileInts.add(Integer.parseInt(currentBlock));
+					currentBlock = "";
+					
+				}
+				else {
+					currentBlock += (char)currentChar;
+				}
 			}
 			encodedFileReader.close();
 		} catch (Exception e) {
@@ -70,7 +81,12 @@ public class Decode extends LZWHelper{
 		}
 
 		//convert the arraylist into an integer array
-		int[] encodedFileIntsArray = encodedFileInts.toArray();
+		int[] encodedFileIntsArray = new int[encodedFileInts.size()];
+		for(int i = 0; i < encodedFileInts.size(); i++)
+		{
+			encodedFileIntsArray[i] = encodedFileInts.get(i); 
+		}
+		
 
 		return encodedFileIntsArray;
 	}
@@ -124,7 +140,6 @@ public class Decode extends LZWHelper{
 			if(encodingDictionary.get(currentLongestSubstringInDictionary.toString()) == null)
 			{
 				handleSubstringNotInDictionary(plaintextChunk.charAt(i), currentLongestSubstringInDictionary, encodingDictionary, decodingDictionary);
-				System.out.println(encodingDictionary);
 			}
 		}
 	}
@@ -134,7 +149,7 @@ public class Decode extends LZWHelper{
 	 * @param encodingDictionary the encoding dictionary
 	 * @param decodingDictionary the decoding dictionary
 	 */
-	private void addNewSymbolToDictionary(StringBuilder currentLongestSubstringInDictionary, HashMap<String, Integer> encodingDictionary, HashMap<Integer, String> decodingDictionary)
+	public void addNewSymbolToDictionary(StringBuilder currentLongestSubstringInDictionary, HashMap<String, Integer> encodingDictionary, HashMap<Integer, String> decodingDictionary)
 	{
 		String symbol = currentLongestSubstringInDictionary.toString();
 		encodingDictionary.put(symbol, encodingDictionary.size());

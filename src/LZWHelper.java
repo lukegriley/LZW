@@ -43,8 +43,9 @@ public class LZWHelper
 	 * @param encodingDictionary the encoding dictionary
 	 * @param decodingDictionary the decoding dictionary
 	 */
-	private void addNewSymbolToDictionary(StringBuilder currentLongestSubstringInDictionary, HashMap<String, Integer> encodingDictionary, HashMap<Integer, String> decodingDictionary)
+	public void addNewSymbolToDictionary(StringBuilder currentLongestSubstringInDictionary, HashMap<String, Integer> encodingDictionary, HashMap<Integer, String> decodingDictionary)
 	{
+		
 	}
 	/**
 	 * Outputs the output to a codestream.

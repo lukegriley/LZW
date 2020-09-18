@@ -10,7 +10,7 @@ public class Encode extends LZWHelper{
 	
 	/**
 	 * This function encodes plaintext inside a .txt file and writes an LZW-encoded version of that string to a file named "(original file name) encoded.txt".
-	 * The format of the content of the encoded file is a string of comma-delimited integers (e.g. 96, 97, 98, 256).
+	 * The format of the content of the encoded file is a string of space-delimited integers (e.g. 96, 97, 98, 256).
 	 * @param inputFilename the name of the file containing the plaintext to be encoded.
 	 * @throws IOException I'm going to be honest, I don't actually know what an IOException is. I didn't write this code. Sorry. You do get documentation and refactoring on literally everything else, though, so I'd say that's a fair trade.
 	 */

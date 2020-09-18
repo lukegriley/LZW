@@ -1,22 +1,46 @@
+
+import java.util.*;
+import java.io.*;
 import java.util.HashMap;
+public class Decode{
+
 
 public class Decode extends LZWHelper{
-	
+
 	/*
 	 * TODO: Merge initializeEncodingDictionary and initializeDecodingDictionary into a single function that calls addNewSymbolToDictionary CHARSET_SIZE times
 	 */
-	
+
 	public Decode()
 	{
-		
+
 	}
-	
+
+
+	public ArrayList<Integer> convertFileToString(String filename)
+	{
+		//read the encoded file as an input
+		BufferedReader encodedFileReader = new BufferedReader(new FileReader(filename));
+		//create an arraylist that will take in the encoded file in the form of ints from chars
+		ArrayList<Integer> encodedFileInts = new ArrayList<Integer>();
+		int current;
+
+		//iterate through the encoded file and convert it into a string
+		while((current = encodedFileReader.read())!=-1)
+		{
+			encodedFileInts.add(current);
+		}
+		encodedFileReader.close();
+
+		return encodedFileInts;
+	}
+
 	/**
 	 * Returns a HashMap<Integer, String> object that represents the dictionary that an LZW algorithm would create to encode a plaintext string.
 	 * Takes in ciphertext formatted as an array of integers.
 	 * For example, if the input is [97,98,99,256,99] where the plaintext is abcabc, then the HashMap would have as key-value pairs (256, ab), (257, bc), (258, ca), (259, abc)
-	 * 
-	 * @param ciphertextAsArray the ciphertext that will correspond to the HashMap we return. 
+	 *
+	 * @param ciphertextAsArray the ciphertext that will correspond to the HashMap we return.
 	 * @return the HashMap that can be used to decode the ciphertext.
 	 */
 	public HashMap<Integer, String> getLZWDecodingHashMap(int[] ciphertextAsArray)
@@ -25,7 +49,7 @@ public class Decode extends LZWHelper{
 		//The following two methods will initialize our encoding and decoding dictionaries, respectively.
 		initializeEncodingDictionary(encodingDictionary, CHARSET_SIZE);
 		initializeDecodingDictionary(decodingDictionary, CHARSET_SIZE);
-		//We will decode all of the ciphertext that we can, perform LZW encoding on it to get a portion of the decoding dictionary, use that portion of the decoding dictionary to decode more of the ciphertext, and iterate this until the ciphertext is completely decoded. 
+		//We will decode all of the ciphertext that we can, perform LZW encoding on it to get a portion of the decoding dictionary, use that portion of the decoding dictionary to decode more of the ciphertext, and iterate this until the ciphertext is completely decoded.
 		for(int i = 0; i < ciphertextAsArray.length; i++)
 		{
 			decode(ciphertextAsArray[i], currentLongestSubstringInDictionary, encodingDictionary, decodingDictionary);
@@ -37,9 +61,9 @@ public class Decode extends LZWHelper{
 	 * Namely, for each character in the decoded chunk, it appends it to currentLongestSubstringInDictionary, then checks whether currentLongestSubstringInDictionary is in encodingDictionary.
 	 * If it is, then it moves on to the next character, or if there is no next character, returns.
 	 * If it is not, then it adds the key-value pair (currentLongestSubstringInDictionary, encodingDictionary.size()) to encodingDictionary and the key-value pair (decodingDictionary.size(), currentLongestSubstringInDictionary) to decodingDictionary.
-	 * It then sets currentLongestSubstringInDictionary to the character currently being observed. 
+	 * It then sets currentLongestSubstringInDictionary to the character currently being observed.
 	 * @param ciphertext the integer representing one block of ciphertext to be decoded into plaintext
-	 * @param currentLongestSubstringInDictionary the longest consecutive substring in the plaintext which is already in our dictionary 
+	 * @param currentLongestSubstringInDictionary the longest consecutive substring in the plaintext which is already in our dictionary
 	 * @param encodingDictionary the dictionary we will use to keep track of the encoding key-value pairs
 	 * @param decodingDictionary the dictionary we will use to keep track of the decoding key-value pairs
 	 */
@@ -105,7 +129,7 @@ public class Decode extends LZWHelper{
 	 * In other words, the information required to add, say, "bb=256" cannot be accessed, because to add "bb" you need to first decode "256", but to decode "256" you must first add "bb."
 	 * By way of example, consider encoding the string "bbbb". Each of the steps are enumerated below:
 	 * P = null, C = b, no output, no change in dictionary
-	 * P = b, C = b, output 98 (b), add bb (256) to dictionary 
+	 * P = b, C = b, output 98 (b), add bb (256) to dictionary
 	 * P = b, C = b, no output, no change in dictionary
 	 * P = bb, C = b, output bb (256) and b (98) [both are outputted because we have reached the end and triggered the edge case], no change in dictionary
 	 * The final output will be 98,256,98. But when we perform our algorithm of decoding everything that we can, adding every key that we can create from the decoded part to the dictionary, and iterating, we find a problem.
@@ -122,5 +146,4 @@ public class Decode extends LZWHelper{
 		addNewSymbolToDictionary(new StringBuilder(currentLongestSubstringInDictionary.toString()+currentLongestSubstringInDictionary.toString().charAt(0)), encodingDictionary, decodingDictionary);
 	}
 	
-
 }

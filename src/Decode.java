@@ -152,9 +152,13 @@ public class Decode extends LZWHelper{
 	 */
 	public void addNewSymbolToDictionary(StringBuilder currentLongestSubstringInDictionary, HashMap<String, Integer> encodingDictionary, HashMap<Integer, String> decodingDictionary)
 	{
-		String symbol = currentLongestSubstringInDictionary.toString();
-		encodingDictionary.put(symbol, encodingDictionary.size());
-		decodingDictionary.put(decodingDictionary.size(), symbol);
+		if(encodingDictionary.size() < MAX_DICTIONARY_SIZE)
+		{
+			String symbol = currentLongestSubstringInDictionary.toString();
+			encodingDictionary.put(symbol, encodingDictionary.size());
+			decodingDictionary.put(decodingDictionary.size(), symbol);
+		}
+		
 	}
 	/**
 	 * This function will run through a loop CHARSET_SIZE times in which it adds the key value pair (c, i) where i is the index of the loop and c is the character corresponding to that index, as a string.

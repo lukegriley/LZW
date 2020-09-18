@@ -17,6 +17,8 @@ public class LZWHelper
 	StringBuilder currentLongestSubstringInDictionary = new StringBuilder();
 	//We need to initialize the encoding and decoding dictionaries with the charset we are using. CHARSET_SIZE represents the size of our charset.
 	final int CHARSET_SIZE = 256;
+	//This is the maximum size of our dictionary.
+	final int MAX_DICTIONARY_SIZE = 5000;
 	/**
 	 * Handles the case when the substring used for LZW encoding is not in the encoding dictionary. Adds the substring to the dictionary, outputs the necessary codeword to the codestream, then resets the substring. 
 	 * @param ciphertext the integer representing one block of ciphertext to be decoded into plaintext

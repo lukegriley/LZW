@@ -94,8 +94,12 @@ public class Encode extends LZWHelper{
 	 */
 	public void addNewSymbolToDictionary(StringBuilder currentLongestSubstringInDictionary, HashMap<String, Integer> encodingDictionary, HashMap<Integer, String> decodingDictionary)
 	{
-		String symbol = currentLongestSubstringInDictionary.toString();
-		encodingDictionary.put(symbol, encodingDictionary.size());
+		if(encodingDictionary.size() < MAX_DICTIONARY_SIZE)
+		{
+			String symbol = currentLongestSubstringInDictionary.toString();
+			encodingDictionary.put(symbol, encodingDictionary.size());
+		}
+		
 	}
 	
 	/**

@@ -16,7 +16,7 @@ public class LZWHelper
 	//we use a StringBuilder instead of a String so that we can modify the value stored inside currentLongestSubstringInDictionary from within a function. (In Java, Strings are immutable, so we cannot simply concatenate values to a string.)
 	StringBuilder currentLongestSubstringInDictionary = new StringBuilder();
 	//We need to initialize the encoding and decoding dictionaries with the charset we are using. CHARSET_SIZE represents the size of our charset.
-	final int CHARSET_SIZE = 128;
+	final int CHARSET_SIZE = 256;
 	/**
 	 * Handles the case when the substring used for LZW encoding is not in the encoding dictionary. Adds the substring to the dictionary, outputs the necessary codeword to the codestream, then resets the substring. 
 	 * @param ciphertext the integer representing one block of ciphertext to be decoded into plaintext
@@ -24,14 +24,14 @@ public class LZWHelper
 	 * @param encodingDictionary the dictionary we will use to keep track of the encoding key-value pairs
 	 * @param decodingDictionary the dictionary we will use to keep track of the decoding key-value pairs
 	 */
-	public void handleSubstringNotInDictionary(char plaintextChar, StringBuilder currentLongestSubstringInDictionary, HashMap<String, Integer> encodingDictionary, HashMap<Integer, String> decodingDictionary)
+	protected void handleSubstringNotInDictionary(char plaintextChar, StringBuilder currentLongestSubstringInDictionary, HashMap<String, Integer> encodingDictionary, HashMap<Integer, String> decodingDictionary)
 	{
 		addNewSymbolToDictionary(currentLongestSubstringInDictionary, encodingDictionary, decodingDictionary);
 		//resetting currentLongestSubstringInDictionary
 		currentLongestSubstringInDictionary.setLength(0); 
 		currentLongestSubstringInDictionary.append(plaintextChar + "");
 	}
-	public void handleSubstringNotInDictionary(char plaintextChar, StringBuilder currentLongestSubstringInDictionary, HashMap<String, Integer> encodingDictionary, HashMap<Integer, String> decodingDictionary, BufferedWriter encodeWriter)
+	protected void handleSubstringNotInDictionary(char plaintextChar, StringBuilder currentLongestSubstringInDictionary, HashMap<String, Integer> encodingDictionary, HashMap<Integer, String> decodingDictionary, BufferedWriter encodeWriter)
 	{
 		outputToCodestream(currentLongestSubstringInDictionary.toString().substring(0, currentLongestSubstringInDictionary.length()-1), encodeWriter);
 		handleSubstringNotInDictionary(plaintextChar, currentLongestSubstringInDictionary, encodingDictionary, decodingDictionary);
@@ -43,7 +43,7 @@ public class LZWHelper
 	 * @param encodingDictionary the encoding dictionary
 	 * @param decodingDictionary the decoding dictionary
 	 */
-	public void addNewSymbolToDictionary(StringBuilder currentLongestSubstringInDictionary, HashMap<String, Integer> encodingDictionary, HashMap<Integer, String> decodingDictionary)
+	private void addNewSymbolToDictionary(StringBuilder currentLongestSubstringInDictionary, HashMap<String, Integer> encodingDictionary, HashMap<Integer, String> decodingDictionary)
 	{
 	}
 	/**

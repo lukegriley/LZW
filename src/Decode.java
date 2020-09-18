@@ -2,12 +2,12 @@
 import java.util.*;
 import java.io.*;
 import java.util.HashMap;
-public class Decode{
-
 
 public class Decode extends LZWHelper{
 
+
 	/*
+	 * TODO: Handle IOExceptions better
 	 * TODO: Merge initializeEncodingDictionary and initializeDecodingDictionary into a single function that calls addNewSymbolToDictionary CHARSET_SIZE times
 	 */
 
@@ -15,22 +15,42 @@ public class Decode extends LZWHelper{
 	{
 
 	}
-
-
-	public ArrayList<Integer> convertFileToString(String filename)
+	/**
+	 * This method decodes a sequence of comma-delimited integers representing an LZW-encoded file.
+	 * It does so by reading in a file containing nothing but a sequence of comma-delimited integers, running a function which finds the hashmap that the original LZW encoding algorithm used to encode the plaintext, and uses it to decode the ciphertext.
+	 * Takes in a filename that ends in .lzw and writes the plaintext to a file whose name is filename.substring(0, filename.length()-4).
+	 * It is known that the getLZWDecodingHashMap function more or less already decodes the input on its own. 
+	 * This is an artifact of the way work was divided up. 
+	 * A future optimization would be to use the getLZWDecodingHashMap function to directly decode the file, instead of using this moderately slow method. However, the big O is still O(n) where n is the length of the file, so it is probably alright.
+	 * @param filename 
+	 */
+	public void decode(String filename)
 	{
-		//read the encoded file as an input
-		BufferedReader encodedFileReader = new BufferedReader(new FileReader(filename));
+		
+	}
+	
+	//TODO: Document this
+	private ArrayList<Integer> convertFileToString(String filename)
+	{
+		
 		//create an arraylist that will take in the encoded file in the form of ints from chars
 		ArrayList<Integer> encodedFileInts = new ArrayList<Integer>();
-		int current;
+		
+		try {
+			//read the encoded file as an input
+			BufferedReader encodedFileReader = new BufferedReader(new FileReader(filename));
+			
+			int current;
 
-		//iterate through the encoded file and convert it into a string
-		while((current = encodedFileReader.read())!=-1)
-		{
-			encodedFileInts.add(current);
+			//iterate through the encoded file and convert it into a string
+			while((current = encodedFileReader.read())!=-1)
+			{
+				encodedFileInts.add(current);
+			}
+			encodedFileReader.close();
+		} catch (Exception e) {
+			
 		}
-		encodedFileReader.close();
 
 		return encodedFileInts;
 	}
@@ -43,7 +63,7 @@ public class Decode extends LZWHelper{
 	 * @param ciphertextAsArray the ciphertext that will correspond to the HashMap we return.
 	 * @return the HashMap that can be used to decode the ciphertext.
 	 */
-	public HashMap<Integer, String> getLZWDecodingHashMap(int[] ciphertextAsArray)
+	private HashMap<Integer, String> getLZWDecodingHashMap(int[] ciphertextAsArray)
 	{
 
 		//The following two methods will initialize our encoding and decoding dictionaries, respectively.
@@ -52,7 +72,7 @@ public class Decode extends LZWHelper{
 		//We will decode all of the ciphertext that we can, perform LZW encoding on it to get a portion of the decoding dictionary, use that portion of the decoding dictionary to decode more of the ciphertext, and iterate this until the ciphertext is completely decoded.
 		for(int i = 0; i < ciphertextAsArray.length; i++)
 		{
-			decode(ciphertextAsArray[i], currentLongestSubstringInDictionary, encodingDictionary, decodingDictionary);
+			decodeSection(ciphertextAsArray[i], currentLongestSubstringInDictionary, encodingDictionary, decodingDictionary);
 		}
 		return decodingDictionary;
 	}
@@ -67,7 +87,7 @@ public class Decode extends LZWHelper{
 	 * @param encodingDictionary the dictionary we will use to keep track of the encoding key-value pairs
 	 * @param decodingDictionary the dictionary we will use to keep track of the decoding key-value pairs
 	 */
-	private void decode(int ciphertext, StringBuilder currentLongestSubstringInDictionary, HashMap<String, Integer> encodingDictionary, HashMap<Integer, String> decodingDictionary)
+	private void decodeSection(int ciphertext, StringBuilder currentLongestSubstringInDictionary, HashMap<String, Integer> encodingDictionary, HashMap<Integer, String> decodingDictionary)
 	{
 		//plaintextChunk will contain the plaintext that ciphertext corresponds to.
 		String plaintextChunk = new String();
@@ -94,7 +114,7 @@ public class Decode extends LZWHelper{
 	 * @param encodingDictionary the encoding dictionary
 	 * @param decodingDictionary the decoding dictionary
 	 */
-	public void addNewSymbolToDictionary(StringBuilder currentLongestSubstringInDictionary, HashMap<String, Integer> encodingDictionary, HashMap<Integer, String> decodingDictionary)
+	private void addNewSymbolToDictionary(StringBuilder currentLongestSubstringInDictionary, HashMap<String, Integer> encodingDictionary, HashMap<Integer, String> decodingDictionary)
 	{
 		String symbol = currentLongestSubstringInDictionary.toString();
 		encodingDictionary.put(symbol, encodingDictionary.size());
@@ -105,7 +125,7 @@ public class Decode extends LZWHelper{
 	 * @param encodingDictionary the dictionary to be initialized
 	 * @param CHARSET_SIZE the size of the charset
 	 */
-	public void initializeEncodingDictionary(HashMap<String, Integer> encodingDictionary, int CHARSET_SIZE)
+	private void initializeEncodingDictionary(HashMap<String, Integer> encodingDictionary, int CHARSET_SIZE)
 	{
 		for(int i = 0; i < CHARSET_SIZE; i++)
 		{

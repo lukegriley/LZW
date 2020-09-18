@@ -21,7 +21,7 @@ public class Encode extends LZWHelper{
 		BufferedWriter encodeWriter = new BufferedWriter(new FileWriter(getEncodedFilename(inputFilename)));
 		//we will initialize our dictionary with all the characters in our charset.
 		initializeEncodingDictionary(encodingDictionary, CHARSET_SIZE);
-		//currentCharacter is the character we are currently running the LZW algorithm on.
+		//currentCharacter is the character we are currently running the LZW algorithm on. It is set to q as an arbitrary choice; it must be initialized to something, and chars are not nullable.
 		char currentCharacter = 'q';
 		
 		while(inputFileReader.ready()) {
@@ -70,7 +70,7 @@ public class Encode extends LZWHelper{
 	 */
 	private String getEncodedFilename(String filename)
 	{
-		return (filename.substring(0,filename.length()-4)+" encoded.txt");
+		return (filename.substring(0,filename.length()) + ".lzw");
 	}
 	
 	/**

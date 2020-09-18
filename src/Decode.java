@@ -10,10 +10,7 @@ public class Decode extends LZWHelper{
 	 * TODO: Merge initializeEncodingDictionary and initializeDecodingDictionary into a single function that calls addNewSymbolToDictionary CHARSET_SIZE times
 	 */
 
-	public Decode()
-	{
-
-	}
+	
 	/**
 	 * This method decodes a sequence of comma-delimited integers representing an LZW-encoded file.
 	 * It does so by reading in a file containing nothing but a sequence of comma-delimited integers, running a function which finds the hashmap that the original LZW encoding algorithm used to encode the plaintext, and uses it to decode the ciphertext.
@@ -27,7 +24,7 @@ public class Decode extends LZWHelper{
 	public void decode(String filename) throws IOException
 	{
 		//convert the encoded file into an int array
-		int[] encodedInts = convertFileToString(filename);
+		int[] encodedInts = convertFileToArray(filename);
 		
 		//retrieve the hashmap dictionary based on the encoded file
 		HashMap<Integer,String> dictionary= getLZWDecodingHashMap(encodedInts);
@@ -43,11 +40,17 @@ public class Decode extends LZWHelper{
 			decodeWriter.write(dictionary.get(encodedInts[i]));
 		}
 		decodeWriter.close();
-		
 	}
 	
-	//TODO: Document this
-	private int[] convertFileToString(String filename)
+	/**
+	 * Returns an int[] that contains the encoded file expressed in terms of integers (converted from chars)
+	 * Takes in the filename of the encoded file as a String
+	 * It uses a BufferedReader to read the original file and converts it into an arraylist by looping through all the characters in the file. Afterwards, it converts the arraylist into an int[] for ease of use.
+	 * 
+	 * @param filename
+	 * @return the int array that will be used as the base to deciper the original file 
+	 */
+	private int[] convertFileToArray(String filename)
 	{
 		
 		//create an arraylist that will take in the encoded file in the form of ints from chars
